@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Offscreen Canvas</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <header>
+      <h1>OffscreenCanvas</h1>
+    </header>
+    <main>
+      <section>
+        <button id="make-busy">点击 -> 阻塞主线程 </button>
+        <div id="busy">&nbsp;</div>
+        <div id="fps">&nbsp;</div>
+
+        <div class="display">
+          <div>
+            <h1>Canvas on main thread</h1>
+            <canvas id="canvas-window" width="400" height="200"></canvas>
+          </div>
+          <div>
+            <h1>Canvas on worker</h1>
+            <canvas id="canvas-worker" width="400" height="200"></canvas>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script src="apm.js"></script>
+    <script src="animation.js"></script>
+
+    <script>
+      (async () => {
+        document.querySelector("#make-busy").addEventListener("click", () => {
+          document.querySelector("#busy").innerText = "Main thread working...";
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              Animation.fibonacci(40);
+              document.querySelector("#busy").innerText = "Done!";
+            });
+          });
+        });
+
+        // main thread render
+        const canvas = document.querySelector("#case1");
+        const animationWindow = new Animation(
+          document.querySelector("#canvas-window").getContext("2d")
+        );
+        animationWindow.start();
+
+        // web worker render
+        const worker = new Worker("worker.js");
+        const offscreen = document.querySelector("#canvas-worker").transferControlToOffscreen();
+        worker.postMessage({ msg: "start", canvas: offscreen }, [offscreen]);
+      })();
+    </script>
+  </body>
+</html>
