@@ -1,6 +1,6 @@
 # OffscreenCanvas
 
-[OffscreenCanvas demo set](https://BoBoooooo.github.io/CanvasAPM/)
+[OffscreenCanvas demo set](https://boboooooo.github.io/Canvas-APM/)
 
 # 参考
 
